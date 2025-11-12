@@ -2,335 +2,330 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>🎉 Extravagant Puzzle</title>
 <style>
-:root{
-  --bg-gradient:linear-gradient(135deg,#5a8df0,#a45aff);
-  --card:#ffffff;--text:#111;
-  --accent:#5a8df0;--accent2:#a45aff;--bad:#d94b4b;--good:#2eaa6b;
-}
-*{box-sizing:border-box;}
-html,body{margin:0;height:100%;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;}
-body{
-  background:var(--bg-gradient);color:var(--text);
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;transition:background .6s ease;
-}
-
-/* main wrapper */
-.wrap{
-  width:min(90vw,800px);
-  background:var(--card);
-  border-radius:18px;
-  box-shadow:0 10px 30px rgba(0,0,0,.1);
-  padding:24px;
-  position:relative;
-  z-index:2;
-}
-h1{text-align:center;margin:0 0 6px;}
-.screen{display:none;} .screen.active{display:block;}
-.center{text-align:center;}
-input,button{
-  font-size:18px;padding:8px 12px;border-radius:10px;
-  border:2px solid #ddd;font-family:inherit;
-}
-button{cursor:pointer;transition:transform .1s;}
-button:active{transform:scale(.96);}
-.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
-.msg{margin-top:10px;min-height:24px;text-align:center;}
-.bad{color:var(--bad);} .good{color:var(--good);}
-
-/* emoji buttons */
-.emoji-btn{
-  font-size:32px;width:56px;height:56px;border-radius:10px;
-  border:2px solid #ddd;display:flex;align-items:center;justify-content:center;
-  background:#fff;line-height:1;
-  transition:box-shadow .2s,transform .1s,background .3s;
-}
-.emoji-btn:hover,.emoji-btn:active{
-  box-shadow:0 0 10px rgba(90,141,240,0.7);
-  transform:scale(1.05);
-}
-
-/* grid */
-.grid{
-  display:grid;
-  grid-template-columns:repeat(7,minmax(28px,6vw));
-  grid-auto-rows:minmax(28px,6vw);
-  gap:6px;justify-content:center;
-  touch-action:none;user-select:none;
-}
-.cell{
-  background:#f1f1f1;border:2px solid #e3e3e3;border-radius:6px;
-  transition:background .15s,box-shadow .15s,transform .05s;
-}
-.cell.hit{
-  background:var(--accent);
-  border-color:var(--accent2);
-  box-shadow:0 0 6px 2px var(--accent2);
-  transform:scale(0.96);
-}
-
-/* timer */
-.timer{
-  height:10px;background:#e9eefc;border-radius:999px;
-  overflow:hidden;margin:12px auto;width:min(420px,90%);
-}
-.timer>div{
-  height:100%;width:100%;
-  background:linear-gradient(90deg,#79a6ff,#3e79ff);
-  transform-origin:left;transition:transform .09s linear;
-}
-#restart{
-  display:none;margin-top:10px;background:var(--accent);
-  color:#fff;border:none;
-}
-
-/* confetti */
-.confetti{
-  position:fixed;width:8px;height:8px;border-radius:2px;
-  animation:fall 3s linear forwards;z-index:4;
-}
-@keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0;}}
-
-/* win screen */
-#win-screen{
-  display:none;text-align:center;color:#fff;background:var(--bg-gradient);
-  position:fixed;top:0;left:0;width:100%;height:100%;
-  display:flex;flex-direction:column;justify-content:center;align-items:center;
-  opacity:0;transition:opacity .6s ease;
-}
-#win-screen.visible{opacity:1;}
-#win-screen .wrap{
-  background:rgba(255,255,255,0.1);
-  padding:30px;border-radius:16px;
-  box-shadow:0 8px 24px rgba(0,0,0,0.3);
-  max-width:400px;
-}
-#win-screen button{
-  background:#fff;color:#333;border:none;
-  padding:10px 20px;font-size:16px;border-radius:10px;
-  cursor:pointer;transition:background .3s;
-}
-#win-screen button:hover{background:#eee;}
+  body {
+    font-family: "Poppins", sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: linear-gradient(135deg, #6a11cb, #2575fc);
+    color: #222;
+    margin: 0;
+    overflow: hidden;
+  }
+  .card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    padding: 25px 30px;
+    max-width: 500px;
+    text-align: center;
+  }
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+  h2 {
+    margin: 15px 0;
+  }
+  #mathHud {
+    font-weight: bold;
+    color: #4f46e5;
+    margin-bottom: 8px;
+  }
+  input {
+    font-size: 1rem;
+    padding: 10px;
+    width: 80%;
+    margin: 10px 0;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+  }
+  button {
+    background: #6366f1;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  button:hover {
+    background: #4f46e5;
+  }
+  .hidden { display: none; }
+  .msg { font-weight: bold; margin-top: 10px; }
+  .cube {
+    width: 50px;
+    height: 50px;
+    background: #e5e7eb;
+    border-radius: 8px;
+    transition: background 0.3s;
+  }
+  #flashGrid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .flashBtn {
+    font-size: 2rem;
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    background: #f3f4f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  .highlight {
+    background: #c7d2fe !important;
+    transition: 0.3s;
+  }
 </style>
 </head>
 <body>
-<div class="wrap" id="game-wrap">
+<div class="card">
   <h1>🧩 Extravagant Puzzle</h1>
 
   <!-- Puzzle 1 -->
-  <section id="s1" class="screen active">
-    <h2 class="center">Puzzle 1 – Solve the Math</h2>
-    <p class="center">What is <b id="q"></b> ?</p>
-    <div class="row">
-      <input id="ans" type="number" inputmode="numeric" placeholder="Your answer">
-      <button id="submitMath">Submit</button>
-    </div>
-    <div id="m1" class="msg"></div>
+  <section id="S1">
+    <h2>Puzzle 1 – Solve the Math</h2>
+    <div id="mathHud">Question 1 of 10</div>
+    <p id="mathQ">What is ?</p>
+    <input id="mathA" placeholder="Your answer" />
+    <button id="mathSubmit">Submit</button>
+    <p id="mathMsg"></p>
   </section>
 
   <!-- Puzzle 2 -->
-  <section id="s2" class="screen">
-    <h2 class="center">Puzzle 2 – Match the Emoji</h2>
-    <p class="center">Tap the emoji that matches 👉 <span id="target" style="font-size:34px"></span></p>
-    <div id="choices" class="row"></div>
-    <div id="m2" class="msg"></div>
+  <section id="S2" class="hidden">
+    <h2>Puzzle 2 – Emoji Sequence</h2>
+    <p>Enter the correct 3 emojis in order 🧠</p>
+    <input id="emojiInput" placeholder="e.g. 🍎🍌🍇" />
+    <button id="emojiSubmit">Submit</button>
+    <p id="emojiMsg"></p>
   </section>
 
   <!-- Puzzle 3 -->
-  <section id="s3" class="screen">
-    <h2 class="center">Puzzle 3 – Drag Through All 49 Cubes</h2>
-    <p class="center">Drag your mouse or finger across every cube within 10 seconds!</p>
-    <div id="grid" class="grid"></div>
-    <div class="timer"><div id="bar"></div></div>
-    <div id="m3" class="msg"></div>
-    <div class="center"><button id="restart">Restart 🔄</button></div>
+  <section id="S3" class="hidden">
+    <h2>Puzzle 3 – Drag Through All Cubes</h2>
+    <p>Drag across every cube before the timer ends!</p>
+    <div id="dragGrid"
+         style="display:grid;grid-template-columns:repeat(6,50px);gap:10px;justify-content:center;margin-top:10px;">
+    </div>
+    <div id="dragBar"
+         style="height:10px;background:linear-gradient(90deg,#3b82f6,#60a5fa);border-radius:5px;margin-top:20px;width:0%;">
+    </div>
+    <button id="dragRestart" class="hidden">Restart</button>
+  </section>
+
+  <!-- Puzzle 4 -->
+  <section id="S4" class="hidden">
+    <h2>Puzzle 4 – Memory Flash</h2>
+    <p id="flashRound">Round 1 of 5</p>
+    <div id="flashGrid"></div>
+    <p id="flashMsg"></p>
+    <button id="flashStart">Start Sequence</button>
+  </section>
+
+  <!-- End -->
+  <section id="End" class="hidden">
+    <h2>🎉 Congratulations!</h2>
+    <p id="scoreText"></p>
+    <button onclick="location.reload()">Play Again</button>
   </section>
 </div>
 
-<!-- win screen -->
-<div id="win-screen">
-  <div class="wrap">
-    <h1>🎉 Congratulations!</h1>
-    <p>You beat the Extravagant Puzzle!</p>
-    <p>This project was designed to be a <b>fun, fast-paced mini game</b> that tests your reaction, logic, and attention.</p>
-    <button onclick="resetGame()">Play Again 🔁</button>
-  </div>
-</div>
-
 <script>
-function beep(){
-  try{
-    const c=new(window.AudioContext||window.webkitAudioContext)(),
-    o=c.createOscillator(),g=c.createGain();
-    o.type='square';o.frequency.value=520;
-    g.gain.setValueAtTime(0.06,c.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+0.1);
-    o.connect(g);g.connect(c.destination);
-    o.start();o.stop(c.currentTime+0.12);
-  }catch(e){}
-}
+const S1=document.getElementById('S1'),
+      S2=document.getElementById('S2'),
+      S3=document.getElementById('S3'),
+      S4=document.getElementById('S4'),
+      End=document.getElementById('End');
 
-const S1=document.getElementById('s1'),
-      S2=document.getElementById('s2'),
-      S3=document.getElementById('s3');
-function show(s){[S1,S2,S3].forEach(x=>x.classList.remove('active'));s.classList.add('active');}
+function show(section){[S1,S2,S3,S4,End].forEach(x=>x.classList.add('hidden'));section.classList.remove('hidden');}
 
-/* puzzle 1 */
-const q=document.getElementById('q'),
-      ans=document.getElementById('ans'),
-      m1=document.getElementById('m1');
-let correct=0;
-document.getElementById('submitMath').onclick=()=>{
-  const v=parseInt(ans.value.trim(),10);
-  if(v===correct){show(S2);setupEmoji();}
-  else{m1.textContent='❌ Wrong – try again';m1.className='msg bad';beep();}
-};
+/* ---------- PUZZLE 1 (HUD ENABLED) ---------- */
+let mathScore=0,mathCount=0;
+const mathQ=document.getElementById('mathQ');
+const mathA=document.getElementById('mathA');
+const mathMsg=document.getElementById('mathMsg');
+const mathHud=document.getElementById('mathHud');
+
+function updateMathHud(){mathHud.textContent=`Question ${mathCount+1} of 10`; }
+
 function newMath(){
-  const a=Math.floor(Math.random()*15)+5,b=Math.floor(Math.random()*15)+5;
-  correct=a+b;q.textContent=`${a}+${b}`;ans.value='';m1.textContent='';
+  if(mathCount>=10){show(S2);return;}
+  const a=Math.floor(Math.random()*10)+1;
+  const b=Math.floor(Math.random()*10)+1;
+  mathQ.textContent=`What is ${a} + ${b}?`;
+  mathQ.dataset.answer=a+b;
+  updateMathHud();
 }
 
-/* puzzle 2 */
-const TARGETS=['🍎','🍪','🦊','🔥','⭐','🐸','💧','🍩','🍓','🍌','🐱','🎲'];
-const t=document.getElementById('target'),
-      choices=document.getElementById('choices'),
-      m2=document.getElementById('m2');
-function setupEmoji(){
-  const target=TARGETS[Math.floor(Math.random()*TARGETS.length)];
-  t.textContent=target;m2.textContent='';
-  const pool=TARGETS.filter(e=>e!==target);const opts=[target];
-  while(opts.length<4){
-    const p=pool[Math.floor(Math.random()*pool.length)];
-    if(!opts.includes(p))opts.push(p);
+document.getElementById('mathSubmit').onclick=()=>{
+  const ans=parseInt(mathA.value);
+  if(ans==mathQ.dataset.answer){mathScore++;mathMsg.textContent='✅ Correct!';}
+  else{mathMsg.textContent='❌ Wrong!';}
+  mathCount++;
+  setTimeout(()=>{mathMsg.textContent='';newMath();},600);
+};
+
+newMath();
+
+/* ---------- PUZZLE 2 ---------- */
+const emojiSeq='🍎🍌🍇';
+document.getElementById('emojiSubmit').onclick=()=>{
+  const v=document.getElementById('emojiInput').value.trim();
+  if(v===emojiSeq){show(S3);initDragPuzzle();}
+  else{document.getElementById('emojiMsg').textContent='❌ Wrong!';}
+};
+
+/* ---------- PUZZLE 3 (Touch Optimized) ---------- */
+function initDragPuzzle(){
+  const grid=document.getElementById('dragGrid');
+  grid.innerHTML='';
+  const cubes=[];
+  for(let i=0;i<30;i++){
+    const c=document.createElement('div');
+    c.className='cube';
+    grid.appendChild(c);
+    cubes.push(c);
   }
-  opts.sort(()=>Math.random()-.5);
-  choices.innerHTML='';
-  opts.forEach(e=>{
-    const b=document.createElement('button');
-    b.className='emoji-btn';b.textContent=e;
-    b.onclick=()=>{
-      if(e===target){
-        b.style.background='#a3ffb3';
-        setTimeout(()=>{show(S3);startDrag();},300);
-      } else {
-        b.style.background='#ffb3b3';
-        setTimeout(()=>b.style.background='#fff',300);
-        m2.textContent='❌ Try again';m2.className='msg bad';beep();
+
+  let dragging=false;
+  let done=0;
+  const bar=document.getElementById('dragBar');
+  const restartBtn=document.getElementById('dragRestart');
+
+  grid.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
+
+  function activateCube(c){
+    if(!c.classList.contains('active')){
+      c.classList.add('active');
+      c.style.background='#6366f1';
+      done++;
+      if(done>=cubes.length){
+        show(S4);
+        initMemoryFlash();
       }
-    };
-    choices.appendChild(b);
+    }
+  }
+
+  grid.onmousedown=()=>dragging=true;
+  grid.onmouseup=()=>dragging=false;
+  grid.onmouseleave=()=>dragging=false;
+  cubes.forEach(c=>{c.onmouseover=()=>{if(dragging)activateCube(c);};});
+
+  grid.ontouchstart=e=>{
+    dragging=true;
+    const t=e.touches[0];
+    const el=document.elementFromPoint(t.clientX,t.clientY);
+    if(el&&el.classList.contains('cube'))activateCube(el);
+  };
+  grid.ontouchmove=e=>{
+    const t=e.touches[0];
+    const el=document.elementFromPoint(t.clientX,t.clientY);
+    if(el&&el.classList.contains('cube'))activateCube(el);
+  };
+  grid.ontouchend=()=>dragging=false;
+
+  let time=0;
+  const interval=setInterval(()=>{
+    time+=1;
+    if(time<=100){bar.style.width=time+'%';}
+    else{clearInterval(interval);restartBtn.classList.remove('hidden');}
+  },100);
+
+  restartBtn.onclick=()=>{show(S3);initDragPuzzle();};
+}
+
+/* ---------- PUZZLE 4 (MULTI-ROUND MEMORY FLASH) ---------- */
+const flashGrid=document.getElementById('flashGrid');
+const flashMsg=document.getElementById('flashMsg');
+const flashStart=document.getElementById('flashStart');
+const flashRound=document.getElementById('flashRound');
+let flashSequence=[];
+let userSequence=[];
+let flashScore=0;
+let round=1;
+const totalRounds=5;
+
+const emojis=['🍎','🔥','🐸','⭐','💧','🐱','🎲','🍓'];
+
+function initMemoryFlash(){
+  flashGrid.innerHTML='';
+  flashMsg.textContent='';
+  userSequence=[];
+  flashSequence=[];
+  flashRound.textContent=`Round ${round} of ${totalRounds}`;
+  flashStart.classList.remove('hidden');
+  emojis.forEach(e=>{
+    const b=document.createElement('div');
+    b.className='flashBtn';
+    b.textContent=e;
+    b.onclick=()=>userPick(e);
+    flashGrid.appendChild(b);
   });
 }
 
-/* puzzle 3 */
-const grid=document.getElementById('grid'),
-      bar=document.getElementById('bar'),
-      m3=document.getElementById('m3'),
-      restart=document.getElementById('restart');
-const GRID_SIZE=7,TIME_LIMIT=10000;
-let visited,total,dragging,done,raf,start;
+flashStart.onclick=()=>{
+  flashStart.classList.add('hidden');
+  flashMsg.textContent='👀 Watch carefully...';
+  flashSequence=[];
+  for(let i=0;i<round+2;i++){flashSequence.push(emojis[Math.floor(Math.random()*emojis.length)]);}
+  let i=0;
+  const interval=setInterval(()=>{
+    highlightEmoji(flashSequence[i]);
+    i++;
+    if(i>=flashSequence.length){
+      clearInterval(interval);
+      setTimeout(()=>{flashMsg.textContent='Now repeat the sequence!';},500);
+    }
+  },800);
+};
 
-function buildGrid(){
-  grid.innerHTML='';
-  for(let i=0;i<GRID_SIZE*GRID_SIZE;i++){
-    const d=document.createElement('div');
-    d.className='cell';d.dataset.i=i;grid.appendChild(d);
-  }
-}
-function startTimer(){
-  start=performance.now();
-  const tick=now=>{
-    const t=Math.min(1,(now-start)/TIME_LIMIT);
-    bar.style.transform=`scaleX(${1-t})`;
-    if(t>=1){timeUp();return;}
-    raf=requestAnimationFrame(tick);
-  };
-  cancelAnimationFrame(raf);
-  bar.style.transform='scaleX(1)';
-  raf=requestAnimationFrame(tick);
-}
-function stopTimer(){cancelAnimationFrame(raf);}
-function timeUp(){
-  if(done)return;
-  done=true;stopTimer();
-  m3.textContent='⏳ Time’s up!';m3.className='msg bad';
-  restart.style.display='inline-block';
-}
-function mark(x,y){
-  const el=document.elementFromPoint(x,y);
-  if(el&&el.classList.contains('cell')&&!el.classList.contains('hit')){
-    el.classList.add('hit');visited++;
-    if(visited>=total)win();
-  }
-}
-function down(e){
-  dragging=true;
-  const X=e.clientX??e.touches[0].clientX,
-        Y=e.clientY??e.touches[0].clientY;
-  mark(X,Y);
-}
-function move(e){
-  if(!dragging)return;
-  const X=e.clientX??e.touches[0].clientX,
-        Y=e.clientY??e.touches[0].clientY;
-  if(X&&Y)mark(X,Y);
-}
-function up(){dragging=false;}
-function win(){
-  if(done)return;
-  done=true;stopTimer();restart.style.display='none';
-  m3.textContent='🎉 You did it!';m3.className='msg good';
-  launchConfetti();setTimeout(()=>showWinScreen(),500);
-}
-function startDrag(){
-  buildGrid();total=GRID_SIZE*GRID_SIZE;
-  visited=0;done=false;dragging=false;
-  restart.style.display='none';m3.textContent='';
-  grid.onpointerdown=down;grid.onpointermove=move;
-  grid.onpointerup=up;grid.onpointercancel=up;
-  startTimer();
-}
-restart.onclick=()=>{show(S1);newMath();}
-
-/* win screen */
-function showWinScreen(){
-  document.getElementById('game-wrap').style.display='none';
-  const win=document.getElementById('win-screen');
-  win.style.display='flex';
-  requestAnimationFrame(()=>win.classList.add('visible'));
-}
-function resetGame(){
-  const win=document.getElementById('win-screen');
-  win.classList.remove('visible');
-  setTimeout(()=>{
-    win.style.display='none';
-    document.getElementById('game-wrap').style.display='block';
-    show(S1);newMath();
-  },400);
-}
-
-/* confetti */
-function launchConfetti(){
-  const totalPieces=60;
-  for(let i=0;i<totalPieces;i++){
-    const c=document.createElement('div');
-    c.className='confetti';
-    const colors=['#ffb3b3','#ffd966','#a3ffb3','#a3e0ff','#d6a3ff','#ff9ef5','#9effff'];
-    c.style.background=colors[Math.floor(Math.random()*colors.length)];
-    c.style.left=Math.random()*100+'vw';
-    c.style.top='-10px';
-    c.style.width=c.style.height=(Math.random()*6+4)+'px';
-    c.style.animationDuration=(Math.random()*2+3)+'s';
-    document.body.appendChild(c);
-    setTimeout(()=>c.remove(),4000);
+function highlightEmoji(e){
+  const btns=[...document.getElementsByClassName('flashBtn')];
+  const btn=btns.find(b=>b.textContent===e);
+  if(btn){
+    btn.classList.add('highlight');
+    setTimeout(()=>btn.classList.remove('highlight'),400);
   }
 }
 
-/* start */
-newMath();
+function userPick(e){
+  if(flashStart.classList.contains('hidden')){
+    userSequence.push(e);
+    if(userSequence.length===flashSequence.length){
+      if(JSON.stringify(userSequence)===JSON.stringify(flashSequence)){
+        flashScore++;
+        flashMsg.textContent='✅ Correct!';
+        if(round<totalRounds){
+          round++;
+          setTimeout(()=>initMemoryFlash(),1000);
+        } else {
+          setTimeout(()=>{show(End);finalScore();},1000);
+        }
+      } else {
+        flashMsg.textContent='❌ Wrong!';
+        setTimeout(()=>{show(End);finalScore();},1000);
+      }
+    }
+  }
+}
+
+/* ---------- END ---------- */
+function finalScore(){
+  document.getElementById('scoreText').textContent=
+    `Math Score: ${mathScore}/10\nMemory Score: ${flashScore}/${totalRounds}`;
+}
 </script>
 </body>
 </html>
