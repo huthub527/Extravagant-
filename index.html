@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>🎉 Extravagant Puzzle</title>
+<style>
+:root{
+  --bg-gradient:linear-gradient(135deg,#5a8df0,#a45aff);
+  --card:#ffffff;--text:#111;
+  --accent:#5a8df0;--accent2:#a45aff;--bad:#d94b4b;--good:#2eaa6b;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;height:100%;font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif;}
+body{
+  background:var(--bg-gradient);color:var(--text);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;transition:background .6s ease;
+}
+
+/* main wrapper */
+.wrap{
+  width:min(90vw,800px);
+  background:var(--card);
+  border-radius:18px;
+  box-shadow:0 10px 30px rgba(0,0,0,.1);
+  padding:24px;
+  position:relative;
+  z-index:2;
+}
+h1{text-align:center;margin:0 0 6px;}
+.screen{display:none;} .screen.active{display:block;}
+.center{text-align:center;}
+input,button{
+  font-size:18px;padding:8px 12px;border-radius:10px;
+  border:2px solid #ddd;font-family:inherit;
+}
+button{cursor:pointer;transition:transform .1s;}
+button:active{transform:scale(.96);}
+.row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.msg{margin-top:10px;min-height:24px;text-align:center;}
+.bad{color:var(--bad);} .good{color:var(--good);}
+
+/* emoji buttons */
+.emoji-btn{
+  font-size:32px;width:56px;height:56px;border-radius:10px;
+  border:2px solid #ddd;display:flex;align-items:center;justify-content:center;
+  background:#fff;line-height:1;
+  transition:box-shadow .2s,transform .1s,background .3s;
+}
+.emoji-btn:hover,.emoji-btn:active{
+  box-shadow:0 0 10px rgba(90,141,240,0.7);
+  transform:scale(1.05);
+}
+
+/* grid */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(28px,6vw));
+  grid-auto-rows:minmax(28px,6vw);
+  gap:6px;justify-content:center;
+  touch-action:none;user-select:none;
+}
+.cell{
+  background:#f1f1f1;border:2px solid #e3e3e3;border-radius:6px;
+  transition:background .15s,box-shadow .15s,transform .05s;
+}
+.cell.hit{
+  background:var(--accent);
+  border-color:var(--accent2);
+  box-shadow:0 0 6px 2px var(--accent2);
+  transform:scale(0.96);
+}
+
+/* timer */
+.timer{
+  height:10px;background:#e9eefc;border-radius:999px;
+  overflow:hidden;margin:12px auto;width:min(420px,90%);
+}
+.timer>div{
+  height:100%;width:100%;
+  background:linear-gradient(90deg,#79a6ff,#3e79ff);
+  transform-origin:left;transition:transform .09s linear;
+}
+#restart{
+  display:none;margin-top:10px;background:var(--accent);
+  color:#fff;border:none;
+}
+
+/* confetti */
+.confetti{
+  position:fixed;width:8px;height:8px;border-radius:2px;
+  animation:fall 3s linear forwards;z-index:4;
+}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg);opacity:0;}}
+
+/* win screen */
+#win-screen{
+  display:none;text-align:center;color:#fff;background:var(--bg-gradient);
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+  opacity:0;transition:opacity .6s ease;
+}
+#win-screen.visible{opacity:1;}
+#win-screen .wrap{
+  background:rgba(255,255,255,0.1);
+  padding:30px;border-radius:16px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.3);
+  max-width:400px;
+}
+#win-screen button{
+  background:#fff;color:#333;border:none;
+  padding:10px 20px;font-size:16px;border-radius:10px;
+  cursor:pointer;transition:background .3s;
+}
+#win-screen button:hover{background:#eee;}
+</style>
+</head>
+<body>
+<div class="wrap" id="game-wrap">
+  <h1>🧩 Extravagant Puzzle</h1>
+
+  <!-- Puzzle 1 -->
+  <section id="s1" class="screen active">
+    <h2 class="center">Puzzle 1 – Solve the Math</h2>
+    <p class="center">What is <b id="q"></b> ?</p>
+    <div class="row">
+      <input id="ans" type="number" inputmode="numeric" placeholder="Your answer">
+      <button id="submitMath">Submit</button>
+    </div>
+    <div id="m1" class="msg"></div>
+  </section>
+
+  <!-- Puzzle 2 -->
+  <section id="s2" class="screen">
+    <h2 class="center">Puzzle 2 – Match the Emoji</h2>
+    <p class="center">Tap the emoji that matches 👉 <span id="target" style="font-size:34px"></span></p>
+    <div id="choices" class="row"></div>
+    <div id="m2" class="msg"></div>
+  </section>
+
+  <!-- Puzzle 3 -->
+  <section id="s3" class="screen">
+    <h2 class="center">Puzzle 3 – Drag Through All 49 Cubes</h2>
+    <p class="center">Drag your mouse or finger across every cube within 10 seconds!</p>
+    <div id="grid" class="grid"></div>
+    <div class="timer"><div id="bar"></div></div>
+    <div id="m3" class="msg"></div>
+    <div class="center"><button id="restart">Restart 🔄</button></div>
+  </section>
+</div>
+
+<!-- win screen -->
+<div id="win-screen">
+  <div class="wrap">
+    <h1>🎉 Congratulations!</h1>
+    <p>You beat the Extravagant Puzzle!</p>
+    <p>This project was designed to be a <b>fun, fast-paced mini game</b> that tests your reaction, logic, and attention.</p>
+    <button onclick="resetGame()">Play Again 🔁</button>
+  </div>
+</div>
+
+<script>
+function beep(){
+  try{
+    const c=new(window.AudioContext||window.webkitAudioContext)(),
+    o=c.createOscillator(),g=c.createGain();
+    o.type='square';o.frequency.value=520;
+    g.gain.setValueAtTime(0.06,c.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+0.1);
+    o.connect(g);g.connect(c.destination);
+    o.start();o.stop(c.currentTime+0.12);
+  }catch(e){}
+}
+
+const S1=document.getElementById('s1'),
+      S2=document.getElementById('s2'),
+      S3=document.getElementById('s3');
+function show(s){[S1,S2,S3].forEach(x=>x.classList.remove('active'));s.classList.add('active');}
+
+/* puzzle 1 */
+const q=document.getElementById('q'),
+      ans=document.getElementById('ans'),
+      m1=document.getElementById('m1');
+let correct=0;
+document.getElementById('submitMath').onclick=()=>{
+  const v=parseInt(ans.value.trim(),10);
+  if(v===correct){show(S2);setupEmoji();}
+  else{m1.textContent='❌ Wrong – try again';m1.className='msg bad';beep();}
+};
+function newMath(){
+  const a=Math.floor(Math.random()*15)+5,b=Math.floor(Math.random()*15)+5;
+  correct=a+b;q.textContent=`${a}+${b}`;ans.value='';m1.textContent='';
+}
+
+/* puzzle 2 */
+const TARGETS=['🍎','🍪','🦊','🔥','⭐','🐸','💧','🍩','🍓','🍌','🐱','🎲'];
+const t=document.getElementById('target'),
+      choices=document.getElementById('choices'),
+      m2=document.getElementById('m2');
+function setupEmoji(){
+  const target=TARGETS[Math.floor(Math.random()*TARGETS.length)];
+  t.textContent=target;m2.textContent='';
+  const pool=TARGETS.filter(e=>e!==target);const opts=[target];
+  while(opts.length<4){
+    const p=pool[Math.floor(Math.random()*pool.length)];
+    if(!opts.includes(p))opts.push(p);
+  }
+  opts.sort(()=>Math.random()-.5);
+  choices.innerHTML='';
+  opts.forEach(e=>{
+    const b=document.createElement('button');
+    b.className='emoji-btn';b.textContent=e;
+    b.onclick=()=>{
+      if(e===target){
+        b.style.background='#a3ffb3';
+        setTimeout(()=>{show(S3);startDrag();},300);
+      } else {
+        b.style.background='#ffb3b3';
+        setTimeout(()=>b.style.background='#fff',300);
+        m2.textContent='❌ Try again';m2.className='msg bad';beep();
+      }
+    };
+    choices.appendChild(b);
+  });
+}
+
+/* puzzle 3 */
+const grid=document.getElementById('grid'),
+      bar=document.getElementById('bar'),
+      m3=document.getElementById('m3'),
+      restart=document.getElementById('restart');
+const GRID_SIZE=7,TIME_LIMIT=10000;
+let visited,total,dragging,done,raf,start;
+
+function buildGrid(){
+  grid.innerHTML='';
+  for(let i=0;i<GRID_SIZE*GRID_SIZE;i++){
+    const d=document.createElement('div');
+    d.className='cell';d.dataset.i=i;grid.appendChild(d);
+  }
+}
+function startTimer(){
+  start=performance.now();
+  const tick=now=>{
+    const t=Math.min(1,(now-start)/TIME_LIMIT);
+    bar.style.transform=`scaleX(${1-t})`;
+    if(t>=1){timeUp();return;}
+    raf=requestAnimationFrame(tick);
+  };
+  cancelAnimationFrame(raf);
+  bar.style.transform='scaleX(1)';
+  raf=requestAnimationFrame(tick);
+}
+function stopTimer(){cancelAnimationFrame(raf);}
+function timeUp(){
+  if(done)return;
+  done=true;stopTimer();
+  m3.textContent='⏳ Time’s up!';m3.className='msg bad';
+  restart.style.display='inline-block';
+}
+function mark(x,y){
+  const el=document.elementFromPoint(x,y);
+  if(el&&el.classList.contains('cell')&&!el.classList.contains('hit')){
+    el.classList.add('hit');visited++;
+    if(visited>=total)win();
+  }
+}
+function down(e){
+  dragging=true;
+  const X=e.clientX??e.touches[0].clientX,
+        Y=e.clientY??e.touches[0].clientY;
+  mark(X,Y);
+}
+function move(e){
+  if(!dragging)return;
+  const X=e.clientX??e.touches[0].clientX,
+        Y=e.clientY??e.touches[0].clientY;
+  if(X&&Y)mark(X,Y);
+}
+function up(){dragging=false;}
+function win(){
+  if(done)return;
+  done=true;stopTimer();restart.style.display='none';
+  m3.textContent='🎉 You did it!';m3.className='msg good';
+  launchConfetti();setTimeout(()=>showWinScreen(),500);
+}
+function startDrag(){
+  buildGrid();total=GRID_SIZE*GRID_SIZE;
+  visited=0;done=false;dragging=false;
+  restart.style.display='none';m3.textContent='';
+  grid.onpointerdown=down;grid.onpointermove=move;
+  grid.onpointerup=up;grid.onpointercancel=up;
+  startTimer();
+}
+restart.onclick=()=>{show(S1);newMath();}
+
+/* win screen */
+function showWinScreen(){
+  document.getElementById('game-wrap').style.display='none';
+  const win=document.getElementById('win-screen');
+  win.style.display='flex';
+  requestAnimationFrame(()=>win.classList.add('visible'));
+}
+function resetGame(){
+  const win=document.getElementById('win-screen');
+  win.classList.remove('visible');
+  setTimeout(()=>{
+    win.style.display='none';
+    document.getElementById('game-wrap').style.display='block';
+    show(S1);newMath();
+  },400);
+}
+
+/* confetti */
+function launchConfetti(){
+  const totalPieces=60;
+  for(let i=0;i<totalPieces;i++){
+    const c=document.createElement('div');
+    c.className='confetti';
+    const colors=['#ffb3b3','#ffd966','#a3ffb3','#a3e0ff','#d6a3ff','#ff9ef5','#9effff'];
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.left=Math.random()*100+'vw';
+    c.style.top='-10px';
+    c.style.width=c.style.height=(Math.random()*6+4)+'px';
+    c.style.animationDuration=(Math.random()*2+3)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),4000);
+  }
+}
+
+/* start */
+newMath();
+</script>
+</body>
+</html>
